@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="description"
+			content="A hands-on introduction to hosting a static website with Amazon S3."
+		/>
+		<meta name="theme-color" content="#112c2b" />
+		<title>Cloud Notes | Your first S3 website</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="style.css" />
+		
+	</head>
+	<body>
+		<header class="site-header">
+			<a class="brand" href="#top" aria-label="Cloud Notes home"
+				><span class="brand-mark" aria-hidden="true">{ }</span>Cloud Notes</a
+			>
+			<nav class="site-nav" aria-label="Main navigation">
+				<a href="#how-it-works">How it works</a>
+				<a href="#deploy">Deploy</a>
+				<a class="nav-cta" href="#deploy"
+					>Start learning <span aria-hidden="true">↗</span></a
+				>
+			</nav>
+		</header>
+		<main id="top">
+			<section class="hero" aria-labelledby="hero-title">
+				<div class="hero-content">
+					<p class="eyebrow">A small cloud lesson · 01</p>
+					<h1 id="hero-title">
+						Your first website, <span style="color: red;">in the cloud.</span>
+					</h1>
+					<p class="hero-copy">
+						A regular HTML page can live somewhere extraordinary. Meet Amazon
+						S3: a simple way to put your static site on the internet.
+					</p>
+					<a class="button-link" href="#how-it-works"
+						>See how it works <span aria-hidden="true">↓</span></a
+					>
+				</div>
+				<p class="hero-note">NO SERVERS TO MANAGE&nbsp; / &nbsp;JUST FILES</p>
+			</section>
+			<section class="intro section-wrap" aria-labelledby="intro-title">
+				<div>
+					<p class="section-label">The simple version</p>
+					<h2 id="intro-title">A bucket for your website files.</h2>
+				</div>
+				
+				<p class="intro-copy">
+					A static site is made from files that are ready to serve: HTML,
+					stylesheets, images, and scripts. S3 stores those files and can return
+					them when someone visits your site.
+				</p>
+			</section>
+			<section
+				class="process-section"
+				id="how-it-works"
+				aria-labelledby="flow-title"
+			>
+				<div class="section-wrap">
+					<div class="section-heading">
+						<div>
+							<p class="section-label">Under the hood</p>
+							<h2 id="flow-title">Three steps. One website.</h2>
+						</div>
+						<p>
+							No app server, no build pipeline required. Your browser asks for a
+							file, and S3 sends it back.
+						</p>
+					</div>
+					<div class="flow">
+						<article class="flow-step">
+							<div class="step-top">
+								<span class="step-number">01 / YOUR FILES</span
+								><span class="step-icon" aria-hidden="true">&lt;/&gt;</span>
+							</div>
+							<h3>Make a page</h3>
+							<p>
+								Write your HTML, CSS, and images. The browser already knows how
+								to use them.
+							</p>
+						</article>
+						<article class="flow-step">
+							<div class="step-top">
+								<span class="step-number">02 / AMAZON S3</span
+								><span class="step-icon" aria-hidden="true">▤</span>
+							</div>
+							<h3>Store it in a bucket</h3>
+							<p>
+								Upload the files to an S3 bucket and enable static website
+								hosting.
+							</p>
+						</article>
+						<article class="flow-step">
+							<div class="step-top">
+								<span class="step-number">03 / THE WEB</span
+								><span class="step-icon" aria-hidden="true">↗</span>
+							</div>
+							<h3>Share the endpoint</h3>
+							<p>
+								Someone opens your website endpoint. S3 serves the index
+								document to their browser.
+							</p>
+						</article>
+					</div>
+				</div>
+			</section>
+			<section
+				class="deploy-section section-wrap"
+				id="deploy"
+				aria-labelledby="deploy-title"
+			>
+				<div class="deploy-copy">
+					<p class="section-label">Ready when you are</p>
+					<h2 id="deploy-title">From your folder to your bucket.</h2>
+					<p>
+						Once your bucket is configured, the AWS CLI can sync a local site
+						folder to it. Replace the example bucket name with yours.
+					</p>
+					<ul class="checklist">
+						<li>
+							<span class="check" aria-hidden="true">✓</span
+							><span>Create an S3 bucket in your AWS account.</span>
+						</li>
+						<li>
+							<span class="check" aria-hidden="true">✓</span
+							><span
+								>Enable static website hosting and set
+								<code>index.html</code> as the index document.</span
+							>
+						</li>
+						<li>
+							<span class="check" aria-hidden="true">✓</span
+							><span
+								>Install and configure the AWS CLI with your account
+								credentials.</span
+							>
+						</li>
+					</ul>
+				</div>
+				<div class="command-box">
+					<div class="command-top">
+						<span class="terminal-label">TERMINAL&nbsp; / &nbsp;DEPLOY</span
+						><button
+							class="copy-button"
+							id="copy-command"
+							type="button"
+							aria-label="Copy deployment command"
+						>
+							<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+								<rect
+									x="5.25"
+									y="5.25"
+									width="8.5"
+									height="9.5"
+									rx="1.25"
+									stroke="currentColor"
+									stroke-width="1.3"
+								/>
+								<path
+									d="M10.5 3.5V2.75A1.25 1.25 0 0 0 9.25 1.5h-6A1.25 1.25 0 0 0 2 2.75v7A1.25 1.25 0 0 0 3.25 11h.5"
+									stroke="currentColor"
+									stroke-width="1.3"
+								/></svg
+							><span id="copy-label">Copy</span>
+						</button>
+					</div>
+					<div class="command-content">
+						<pre><span class="prompt">$</span> aws s3 sync ./site s3://YOUR_BUCKET --delete</pre>
+						<p class="command-hint">
+							This syncs the contents of <code>./site</code>. The
+							<code>--delete</code> flag removes remote files that are no longer
+							in your local folder.
+						</p>
+					</div>
+				</div>
+			</section>
+			<aside class="production-band" aria-label="Production hosting note">
+				<div class="production-inner section-wrap">
+					<span class="production-icon" aria-hidden="true">i</span>
+					<p class="production-note">
+						<strong>A note before you publish:</strong> S3 website endpoints are
+						HTTP-only and require public access to the site files. That can work
+						for a learning demo. For a production site, keep the bucket private
+						and serve it through CloudFront using an S3 REST origin for HTTPS.
+					</p>
+				</div>
+			</aside>
+		</main>
+		<footer class="site-footer section-wrap">
+			<span class="footer-brand">Cloud Notes</span
+			><span>A hands-on introduction to static hosting with Amazon S3.</span>
+		</footer>
+		<p id="copy-status" role="status" aria-live="polite"></p>
+		<script>
+			const command = 'aws s3 sync ./site s3://YOUR_BUCKET --delete';
+			const copyButton = document.querySelector('#copy-command');
+			const copyLabel = document.querySelector('#copy-label');
+			const copyStatus = document.querySelector('#copy-status');
+			copyButton.addEventListener('click', async () => {
+				try {
+					await navigator.clipboard.writeText(command);
+					copyLabel.textContent = 'Copied';
+					copyStatus.textContent = 'Deployment command copied to clipboard.';
+				} catch {
+					copyLabel.textContent = 'Copy manually';
+					copyStatus.textContent =
+						'Clipboard access is unavailable. Select and copy the command shown.';
+				}
+				window.setTimeout(() => {
+					copyLabel.textContent = 'Copy';
+				}, 2200);
+			});
+		</script>
+	</body>
+</html>
