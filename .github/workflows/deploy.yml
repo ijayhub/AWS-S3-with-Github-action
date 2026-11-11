@@ -1,58 +1,55 @@
+name: Deploy to S3
 
-# name: Deploy to S3
+on:
+  workflow_dispatch:
 
-# on:
-#   push:
-#     branches:
-#       - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
-#     permissions:
-#       id-token: write
-#       contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      - name: Inspect GitHub OIDC claims
+        shell: bash
+        run: |
+          set -euo pipefail
 
-#       - name: Inspect GitHub OIDC claims
-#         shell: bash
-#         run: |
-#           set -euo pipefail
+          TOKEN_JSON=$(curl -fsS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-#           TOKEN_JSON=$(curl -fsS \
-#             -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-#             "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
+          ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r '.value')
 
-#           ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r '.value')
+          PAYLOAD=$(echo "$ID_TOKEN" | cut -d '.' -f2 | tr '_-' '/+')
+          PADDING=$(( (4 - ${#PAYLOAD} % 4) % 4 ))
+          PAYLOAD="${PAYLOAD}$(printf '%*s' "$PADDING" '' | tr ' ' '=')"
 
-#           PAYLOAD=$(echo "$ID_TOKEN" | cut -d '.' -f2 | tr '_-' '/+')
-#           PADDING=$(( (4 - ${#PAYLOAD} % 4) % 4 ))
-#           PAYLOAD="${PAYLOAD}$(printf '%*s' "$PADDING" '' | tr ' ' '=')"
+          echo "$PAYLOAD" | base64 -d | jq '{
+            sub,
+            aud,
+            repository,
+            repository_id,
+            repository_owner,
+            repository_owner_id,
+            ref
+          }'
 
-#           echo "$PAYLOAD" | base64 -d | jq '{
-#             sub,
-#             aud,
-#             repository,
-#             repository_id,
-#             repository_owner,
-#             repository_owner_id,
-#             ref
-#           }'
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::266735847504:role/GitHubActions-S3-Deployment-Role
+          aws-region: us-east-1
 
-#       - name: Configure AWS credentials using OIDC
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           role-to-assume: arn:aws:iam::266735847504:role/GitHubActions-S3-Deployment-Role
-#           aws-region: us-east-1
-
-#       - name: Deploy to S3
-#         run: |
-#           aws s3 sync . "s3://hello-266735847504-us-east-1-an" \
-#             --delete \
-#             --exclude ".git/*" \
-#             --exclude ".github/*" \
-#             --exclude "README.md"
+      - name: Deploy to S3
+        run: |
+          aws s3 sync . "s3://hello-266735847504-us-east-1-an" \
+            --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "README.md"
